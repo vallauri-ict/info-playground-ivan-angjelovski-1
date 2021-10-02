@@ -44,10 +44,12 @@ HAVING COUNT(*)>1
 /* 13- Per le opere di artisti italiani che non hanno personaggi. il titolo dell’opera ed il nome
 dell'artista */
 SELECT a.NomeA, o.Titolo
-FROM Artisti a, Personaggi p, Opere o
+FROM Artisti a, Opere o
 WHERE a.Nazionalita='IT'
-AND p.Personaggio=NULL
-AND p.Codice=o.Codice AND a.NomeA=o.NomeA
+AND a.NomeA=o.NomeA
+AND NOT EXISTS (SELECT *
+				FROM Personaggi p
+				WHERE p.Codice = o.Codice)
 
 /* 14- Il nome dei musei di Londra che non conservano opere di artisti italiani, eccettuato Tiziano */
 SELECT *
@@ -67,3 +69,7 @@ FROM Artisti a, Opere o
 WHERE a.NomeA=o.NomeA
 GROUP BY o.NomeM,a.Nazionalita
 ORDER BY o.NomeM
+
+UPDATE Artisti
+SET Nazionalita = 'ES'
+WHERE NomeA = 'Picasso'
